@@ -3,7 +3,6 @@
 #include<map>
 #include <vector>
 
-
 #include <cstdio>
 #include <algorithm>
 #include <cstring>
@@ -69,7 +68,9 @@ struct SuffixAutomaton {
     }
   }
 };
- int Substring(string s, string w) {
+
+/* Substring verifica se uma string w é subtring de uma string s. A partir de s é gerado um automato de sufixo (a) que a reconhece, w é então testado no automato para verificar se a string fica contida dentro de a, se sim, então w é uma substring de s*/
+int Substring(string s, string w) {// S é a string que o automato de suffixo reconhece, e w é a string que será testada.
     SuffixAutomaton a(s);
     bool fail = false;
     int n = 0;
@@ -96,20 +97,50 @@ int main ()
 
     scanf("%d",&T);
     scanf("%d",&K);*/
-    int ans;
+    int ans=0;
     char tmp_w[10001];
     scanf("%10000s", tmp_w);
     char tmp_s[10001];
     scanf("%10000s",tmp_s);
     string w = tmp_w;
     string s = tmp_s;
-    if (s.size()>w.size()) {
-        ans = Substring (s,w);
+    cout <<"W --" << w <<'\t';
+    cout <<"S --" << s <<'\n';
+
+    if (s.size()>w.size()) {  // Se o tamanho de S for maior, então ele será o SA, e w (assim como suas subtrings) será testado.
+            //ans = Substring (s,w);
+        cout << "sinal de vida 1" << '\n';
+        for (int l = w.size()-1; l > 0; l--) { // Comprimento do substring vai de w.size -1, até 1. Sendo que as possibilidades de i vai depender do comrpimento l.
+            cout << "sinal de vida 2" << '\n';
+            for (int i = 0; i <= w.size() - l; i++) { // i vai de 0 até a diferença entre o tamanho e o comprimento da string
+                string sub = w.substr(i,l);
+                ans = Substring (s, sub);
+                cout << "i=" << i << "\t"<< "l=" << l<<'\n';
+                cout << "sub = " << sub << '\t' << "ans=" << ans << "\n";
+                if (ans != 0) {
+                    goto end;
+                }
+            }
+        }
+
     } else {
-        ans = Substring (w,s);
+        for (int l = s.size()-1; l > 0; l--) { // Comprimento do substring vai de w.size -1, até 1. Sendo que as possibilidades de i vai depender do comrpimento l.
+            cout << "sinal de vida 2" << '\n';
+            for (int i = 0; i <= s.size() - l; i++) { // i vai de 0 até a diferença entre o tamanho e o comprimento da string
+                string sub = s.substr(i,l);
+                ans = Substring (w, sub);
+                cout << "i=" << i << "\t"<< "l=" << l<<'\n';
+                cout << "sub = " << sub << '\t' << "ans=" << ans << "\n";
+                if (ans != 0) {
+                    goto end;
+                }
+            }
+        }
+        cout << "sinal de vida 9" << '\n';
     }
-    //ans = Substring (s,w);
-    cout << ans << '\n';
+
+    end:
+        cout << "output" <<ans << '\n';
 
     return 0;
 }
