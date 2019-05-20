@@ -1,12 +1,25 @@
 #include<iostream>
-#include<string> // for string class
+#include<string>
 #include<map>
 #include <vector>
+
+
+#include <cstdio>
+#include <algorithm>
+#include <cstring>
+#include <utility>
+#include <queue>
+#include <stack>
+#include <set>
+#include <cmath>
+#include <cassert>
+#include <ctime>
+
 using namespace std;
 
 
 struct SuffixAutomaton {
-  vector<map<char,int>> edges; // edges[i]  : the labeled edges from node i
+  vector<map<char,int> > edges; // edges[i]  : the labeled edges from node i
   vector<int> link;            // link[i]   : the parent of i
   vector<int> length;          // length[i] : the length of the longest string in the ith class
   int last;                    // the index of the equivalence class of the whole string
@@ -65,18 +78,20 @@ int main ()
     /* Entrada de argumentos*/
     int T;
     int K;
-    scanf("%d%d", T,K);
-    string w,s;
-    scanf("%d%d", w,s);
- /*
-    if (T==1) {
-        if(!fail) cout << w.size() \n";
+    scanf("%d",&T);
+    scanf("%d",&K);
+    char tmp_w[10001];
+    scanf("%10000s", tmp_w);
+    char tmp_s[10001];
+    scanf("%10000s",tmp_s);
 
+    string w = tmp_w;
+    string s = tmp_s;
+    /*
+    if (K==1) {
+        cout << w.size() \n";
         }
- */
-
-    string w = "abc";
-    string s = "abcde";
+    */
     SuffixAutomaton a(s);
     bool fail = false;
     int n = 0;
