@@ -88,25 +88,8 @@ int Substring(string s, string w) {// S é a string que o automato de suffixo re
     return w.size();
 }
 
-/* */
-int main ()
-{
-    /* Entrada de argumentos
-    int T;
-    int K;
-
-    scanf("%d",&T);
-    scanf("%d",&K);*/
-    int ans=0;
-    char tmp_w[10001];
-    scanf("%10000s", tmp_w);
-    char tmp_s[10001];
-    scanf("%10000s",tmp_s);
-    string w = tmp_w;
-    string s = tmp_s;
-    cout <<"W --" << w <<'\t';
-    cout <<"S --" << s <<'\n';
-
+int LongestCS_2(string s,string w){ // Longest Common Substring between two strings
+    int ans = 0;
     if (s.size()>w.size()) {  // Se o tamanho de S for maior, então ele será o SA, e w (assim como suas subtrings) será testado.
             //ans = Substring (s,w);
         ans = Substring (s,w); // Primeiro teste é pra ver se o próprio w não é um substring de s.
@@ -114,26 +97,24 @@ int main ()
         for (int l = w.size()-1; l > 0; l--) { // Comprimento do substring vai de w.size -1, até 1. Sendo que as possibilidades de i vai depender do comrpimento l.
             cout << "sinal de vida 2" << '\n';
             for (int i = 0; i <= w.size() - l; i++) { // i vai de 0 até a diferença entre o tamanho e o comprimento da string
-                if (ans != 0) {
+                if (ans != 0) { // Na primeira saida que encontrar um tamanho da string diferente de zero, ou seja a substring permanece a outra string, então sai do loop e manda o valor pro main. Ele vai testando do maior valor para o menor, entao nao precisa testar tudo, só precisa testar até achar o primeiro match.
+                    //return sub.size();
                     goto end;
                 }
                 string sub = w.substr(i,l);
                 ans = Substring (s, sub);
                 cout << "i=" << i << "\t"<< "l=" << l<<'\n';
                 cout << "sub = " << sub << '\t' << "ans=" << ans << "\n";
-                if (ans != 0) {
-                    goto end;
-                }
             }
         }
 
     } else {
         ans = Substring (w,s);
         for (int l = s.size()-1; l > 0; l--) { // Comprimento do substring vai de w.size -1, até 1. Sendo que as possibilidades de i vai depender do comrpimento l.
-
             cout << "sinal de vida 2" << '\n';
             for (int i = 0; i <= s.size() - l; i++) { // i vai de 0 até a diferença entre o tamanho e o comprimento da string
                 if (ans != 0) {
+                    //return sub.size();
                     goto end;
                 }
                 string sub = s.substr(i,l);
@@ -145,9 +126,33 @@ int main ()
         }
         cout << "sinal de vida 9" << '\n';
     }
-
     end:
-        cout << "output" <<ans << '\n';
+    return ans;
+}
+
+/* */
+int main ()
+{
+    /* Entrada de argumentos
+    int T;
+    int K;
+
+    scanf("%d",&T);
+    scanf("%d",&K);*/
+    char tmp_w[10001];
+    char tmp_s[10001];
+    int lcs2;
+    scanf("%10000s", tmp_w);
+    scanf("%10000s",tmp_s);
+    string w = tmp_w;
+    string s = tmp_s;
+    cout <<"W --" << w <<'\t';
+    cout <<"S --" << s <<'\n';
+
+
+    lcs2 = LongestCS_2(s,w);
+
+
 
     return 0;
 }
