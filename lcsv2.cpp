@@ -96,14 +96,20 @@ int main ()
 
     scanf("%d",&T);
     scanf("%d",&K);*/
-    int len_w;
+    int ans;
     char tmp_w[10001];
     scanf("%10000s", tmp_w);
     char tmp_s[10001];
     scanf("%10000s",tmp_s);
     string w = tmp_w;
     string s = tmp_s;
-    len_w = Substring (s,w);
-    cout << len_w << '\n';
+    if (s.size()>w.size()) {
+        ans = Substring (s,w);
+    } else {
+        ans = Substring (w,s);
+    }
+    //ans = Substring (s,w);
+    cout << ans << '\n';
+
     return 0;
 }
