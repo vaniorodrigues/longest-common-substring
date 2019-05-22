@@ -148,22 +148,25 @@ int LongestCS(int k,vector<string> stringInput){ // A primeira string vai ser te
 int main ()
 {
     /* Entrada de argumentos
-    int T;
+
 
     scanf("%d",&T);
     scanf("%d",&K);*/
+
+    int t; // Teste cases
     int k; // Número de strings em um teste.
     int out;
-    scanf("%d", &k);
-
-    char a[k][10001];
-    vector<string> stringInput; //  Local onde é armazenado as strings de entrada.
-    for (int i = 0; i < k; i++) {
-      scanf("%10000s", a[i]);
-      stringInput.push_back(a[i]);
+    scanf("%d\n", &t);
+    for (int i = 0; i < t; i++) {
+        scanf("%d", &k);
+        char a[k][10001];
+        vector<string> stringInput; //  Local onde é armazenado as strings de entrada.
+        for (int j = 0; j < k; j++) {
+          scanf("%10000s", a[i]);
+          stringInput.push_back(a[i]);
+        }
+        out = LongestCS (k, stringInput);
+        cout << << out << '\n';
     }
-    out = LongestCS (k, stringInput);
-    cout << "LCS =  "<< out << '\n';
-
     return 0;
 }
