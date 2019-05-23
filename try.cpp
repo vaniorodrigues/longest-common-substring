@@ -3,9 +3,9 @@
 #include<map>
 #include <vector>
 #include <stdio.h>
-
-
+#include <stdlib.h>
 using namespace std;
+
 
 struct SuffixAutomaton {
   vector<map<char,int> > edges; // edges[i]  : the labeled edges from node i
@@ -64,6 +64,7 @@ int Substring(string s, string w) {// S é a string que o automato de suffixo re
     SuffixAutomaton a(s);
     bool fail = false;
     int n = 0;
+    //int len_w = 0;
     for(int i=0;i<w.size();i++) {
         if(a.edges[n].find(w[i]) == a.edges[n].end()) {
             fail = true;
@@ -78,77 +79,105 @@ int Substring(string s, string w) {// S é a string que o automato de suffixo re
 int LongestCS(int k,vector<string> stringInput){ // A primeira string vai ser testada nos Automatos de Sufixos gerados pelas outras strings.
     int substringLenght = 0;
     string in0 = stringInput[0]; // Usado só pra facilitar a nomenclatura
-    int isSubstri =1;
     if (k==1){
-        substringLenght = in0.size();
-        goto end;
+        return stringInput[0].size();
     }
+
+    vector<SuffixAutomaton> vecSA;
+    for (int i = 0; i < k; i++) { //  Cria um AS para a segunda string em diante.
+       vecSA.push_back(SuffixAutomaton (stringInput[i]));
+    }
+
+
+    int isSubstri =1;
     for (int j = 1; j < k; j++) { // Teste se a primeira string é um substring das outras strigs.
-        isSubstri = Substring(stringInput[j],stringInput[0]) * isSubstri;
-    }
-    if ( isSubstri !=0 ) { //Se isSubstri é diferente de 0, significa que a primeira string é uma substring de todas as strings de entrada.
-        substringLenght = in0.size();
-        goto end; // Hora de sair da função.
-    }
-    for (int l = in0.size()-1; l > 0; l--) { // Comprimento do substring vai de w.size -1, até 1. Sendo que as possibilidades de i vai depender do comrpimento l.;
-        for (int i = 0; i <= in0.size() - l; i++) { // i vai de 0 até a diferença entre o tamanho e o comprimento da string
-            if (substringLenght != 0) {
-                goto end;// Na primeira saida que encontrar um tamanho da string diferente de zero, ou seja a substring permanece a outra string, então sai do loop e manda o valor pro main. Ele vai testando do maior valor para o menor, entao nao precisa testar tudo, só precisa testar até achar o primeiro match.
+        //--- Substring Function
+        int n = 0;
+        for(int i = 0; i < stringInput[0].size(); i++) {
+            if(vecSA[j].edges[n].find(stringInput[0][i]) == vecSA[j].edges[n].end()) {
+                std::cout << "/* laço 1 */" << '\n';
+                isSubstri = 0;
             }
-            string sub_in0 = in0.substr(i,l);
-            int isSubstri =1;
-            for (int j = 1; j < k; j++) { // Teste se alguma  dada substring de também é uma substring das outras strings. Começa em 1 já que k = 0 é a primeira string, sendo desnecessário este testa-lá.
-                isSubstri = Substring(stringInput[j],sub_in0) * isSubstri; // Se um dos valores de substring for zero, nao vai pra saida.
-            }
-            if ( isSubstri !=0 ) { //Se isSubstri é diferente de 0, significa que a última substring testado é uma substring de todas as strings de entrada.
-                substringLenght = sub_in0.size();
-                goto end; // Hora de sair da função.
-            }
+            n = vecSA[j].edges[n][stringInput[0][i]];
         }
     }
-    end: return substringLenght; // Retorna o valor do comprimento da maior substring comum entre as strings de entrada.
+
+    if ( isSubstri !=0 ) { //Se isSubstri é diferente de 0, significa que a primeira string é uma substring de todas as strings de entrada.
+        return in0.size();
+    }
+
+     //isSubstri =1;
+    for (int j = 1; j < k; j++) { // Teste se a primeira string é um substring das outras strigs.
+        //--- Substring Function
+        int n = 0;
+        for(int i = 0; i < stringInput[0].size(); i++) {
+            if(vecSA[j].edges[n].find(stringInput[0][i]) == vecSA[j].edges[n].end()) {
+                std::cout << "/* laço 2 */" << '\n';
+                isSubstri = 0;
+            }
+            n = vecSA[j].edges[n][stringInput[0][i]];
+        }
+    }
+
+    if ( isSubstri !=0 ) { //Se isSubstri é diferente de 0, significa que a primeira string é uma substring de todas as strings de entrada.
+        return in0.size();
+    }
+
+    // //vector<string> sub_in0;
+    // for (int l = in0.size()-1; l > 0; l--) { // Comprimento do substring vai de w.size -1, até 1. Sendo que as possibilidades de i vai depender do comrpimento l.;
+    //     for (int i = 0; i <= in0.size() - l; i++) { // i vai de 0 até a diferença entre o tamanho e o comprimento da string
+    //         string sub_in0 = in0.substr(i,l);
+    //         //int isSubstri =1;
+    //         int isSubstri =1;
+    //         for (int j = 1; j < k; j++) { // Teste se alguma  dada substring de também é uma substring das outras strings. Começa em 1 já que k = 0 é a primeira string, sendo desnecessário este testa-lá.
+    //             std::cout << "j"<< j << '\n';
+    //              // Teste se a primeira string é um substring das outras strigs.
+    //                 //--- Substring Function
+    //                 int n = 0;
+    //                 for(int g = 0; g < in0.size(); g++) {
+    //                     std::cout << "/* message */" << '\n';
+    //                     if(vecSA[j].edges[n].find(in0[g]) == vecSA[j].edges[n].end()) {
+    //
+    //                         isSubstri = 0;
+    //                         //break;
+    //                     }
+    //                     n = vecSA[j].edges[n][in0[g]];
+    //                 }
+    //
+    //             // Se um dos valores de substring for zero, nao vai pra saida.
+    //         }
+    //         if ( isSubstri !=0 ) { //Se isSubstri é diferente de 0, significa que a última substring testado é uma substring de todas as strings de entrada.
+    //             return sub_in0.size();
+    //              // Hora de sair da função.
+    //         }
+    //     }
+    // }
+    end:
+    return 0; // Retorna o valor do comprimento da maior substring comum entre as strings de entrada.
 }
 /* */
-int main ()
+int main ( int argc, char *argv[ ])
 {
+
     int out;
     int t;
     int k;
-    string temp;
-    char tmp[101];
-
+    char a[10][10001];
     scanf("%d", &t);
-    int substringLenght;
-    //cin >> t;
-
     for (int i = 0; i < t; i++) {
-    //cin >> k;
         scanf("%d", &k);
-        vector<string> stringInput; //  Local onde é armazenado as strings de entrada.
+        vector<string> stringInput;
         for (int j = 0; j < k; j++) {
-            scanf("%100s", tmp);
-            stringInput.push_back(tmp);
-
+            scanf("%10000s", a[i]);
+            stringInput.push_back(a[i]);
+            //std::cout << "input  " << stringInput[0]<< endl;
         }
+        out = LongestCS (k, stringInput);
+        printf("%d\n", out);
 
-        SuffixAutomaton a[j](stringInput[1]);
-        bool fail = false;
-        int n = 0;
-        for(int i=0;i<stringInput[0].size();i++) {
-            if(a.edges[n].find(stringInput[0][i]) == a.edges[n].end()) {
-                fail = true;
-                return 0;
-                //break;
-            }
-            n = a.edges[n][stringInput[0][i]];
-        }
-
-        substringLenght = stringInput[0].size();
-    //out = LongestCS (k, stringInput);
-    //cout << out << endl;
-    printf("%d\n", substringLenght);
-    //std::cout << stringInput << '\n';
     }
-    //cout << substringLenght << endl;
+
     return 0;
 }
+
+// Resposta errada

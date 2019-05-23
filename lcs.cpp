@@ -3,8 +3,6 @@
 #include<map>
 #include <vector>
 #include <stdio.h>
-
-
 using namespace std;
 
 
@@ -65,7 +63,6 @@ int Substring(string s, string w) {// S é a string que o automato de suffixo re
     SuffixAutomaton a(s);
     bool fail = false;
     int n = 0;
-    //int len_w = 0;
     for(int i=0;i<w.size();i++) {
         if(a.edges[n].find(w[i]) == a.edges[n].end()) {
             fail = true;
@@ -113,21 +110,22 @@ int LongestCS(int k,vector<string> stringInput){ // A primeira string vai ser te
 /* */
 int main ()
 {
-    int t; // Teste cases
-    scanf("%d", &t);
-     // Número de strings em um teste.
     int out;
-    for (int i = 0; i < t; i++) {
-        int k;
-        scanf("%d", &k);
-        char a[k][10001];
-        vector<string> stringInput; //  Local onde é armazenado as strings de entrada.
-        for (int j = 0; j < k; j++) {
-          scanf("%10000s", a[i]);
-          stringInput.push_back(a[i]);
-        }
-        out = LongestCS (k, stringInput);
-        cout << out << '\n';
+    int t;
+    int k;
+    string temp;
+    char tmp[10001];
+    scanf("%d", &t);
+    vector<string> stringInput; //  Local onde é armazenado as strings de entrada.
+
+for (int i = 0; i < t; i++) {
+    scanf("%d", &k);
+    for (int j = 0; j < k; j++) {
+      scanf("%10000s", tmp);
+      stringInput.push_back(tmp);
+    }
+    out = LongestCS (k, stringInput);
+    printf("%d\n", out);
     }
     return 0;
 }
