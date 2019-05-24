@@ -1,9 +1,10 @@
-#include<iostream>
-#include<string>
-#include<map>
-#include <vector>
-#include <stdio.h>
-#include <stdlib.h>
+#include <bits/stdc++.h>
+//#include<iostream>
+//#include<string>
+//#include<map>
+//#include <vector>
+//#include <stdio.h>
+//#include <stdlib.h>
 using namespace std;
 
 
@@ -60,69 +61,83 @@ struct SuffixAutomaton {
 };
 
 /* Substring verifica se uma string w é substring de uma string s. A partir de s é gerado um automato de sufixo (a) que a reconhece, w é então testado no automato para verificar se a string fica contida dentro de a, se sim, então w é uma substring de s*/
-int Substring(vector<SuffixAutomaton> vecSA, string w, int k) {
+bool Substring(vector<SuffixAutomaton> vecSA, string w, int k) {
+    bool fail = false;
+    int n;
     for (int j = 1; j < k; j++) {
-        int n = 0;
+        n = 0;
         for(int i=0;i<w.size();i++) {
             if(vecSA.at(j).edges[n].find(w[i]) == vecSA.at(j).edges[n].end()) {
-                return 0;
+                fail = true;
+                return fail;
+                break;
             }
             n = vecSA.at(j).edges[n][w[i]];
         }
     }
-    return w.size();
+    return fail;
 }
 
 int LongestCS(vector<SuffixAutomaton> vecSA, string in0, int k){ // A primeira string vai ser testada nos Automatos de Sufixos gerados pelas outras strings.
-    if (k==1){
+
+    bool notSubtring = false;
+    int n;
+    for (int j = 1; j < k; j++) {
+    	n = 0;
+    	for(int i=0;i<in0.size();i++) {
+        	if(vecSA.at(j).edges[n].find(in0[i]) == vecSA.at(j).edges[n].end()) {
+            	notSubtring = true;
+            	break;
+            	}
+            n = vecSA.at(j).edges[n][in0[i]];
+        	}
+    	}
+    if (!notSubtring) {
         return in0.size();
     }
 
-    int substringLenght =0;
-    substringLenght = Substring(vecSA,in0, k);
-
-    if (substringLenght !=0 ) { //Se isSubstri é diferente de 0, significa que a primeira string é uma substring de todas as strings de entrada.
-        return in0.size();
-    }
-    // Teste das substrings.
+    string sub_in0;
     for (int l = in0.size()-1; l > 0; l--) {
         for (int i = 0; i <= in0.size() - l; i++) {
-            string sub_in0 = in0.substr(i,l);
-            for (int j = 1; j < k; j++) {
-                substringLenght = Substring(vecSA,sub_in0, k);
-            }
-            if ( substringLenght !=0 ) {
+            sub_in0 = in0.substr(i,l);
+            notSubtring = Substring(vecSA,sub_in0, k);
+            if (!notSubtring) {
                 return sub_in0.size();
             }
         }
     }
-    return substringLenght; // Retorna o valor do comprimento da maior substring comum entre as strings de entrada.
+    return 0;
 }
 
-/* */
-int main ( int argc, char *argv[ ])
-{
+vector<string> stringInput;
+vector<SuffixAutomaton> vecSA;
+char a[10000];
 
-    int out;
+int main ()
+{
+    int out = 0;
     int t;
     int k;
     scanf("%d", &t);
     //vector<string> stringInput; //  Local onde é armazenado as strings de entrada.
-
     for (int i = 0; i < t; i++) {
         scanf("%d", &k);
-        char a[10001];
-        vector<string> stringInput;
-        vector<SuffixAutomaton> vecSA;
-        for (int j = 0; j < k; j++) {
-            scanf("%10000s", a);
-            stringInput.push_back(a);
-            vecSA.push_back(SuffixAutomaton (stringInput[j]));
-            //std::cout << "input  " << stringInput[j] << "j"<< j<< endl;
+        stringInput.clear();
+        vecSA.clear();
+        if (k == 1) {
+            scanf("%s", a);
+            string b = a;
+            out = b.size();
+            printf("%d\n", out);
+        } else {
+            for (int j = 0; j < k; j++) {
+                scanf("%s", a);
+                stringInput.push_back(a);
+                vecSA.push_back(SuffixAutomaton (stringInput[j]));
+            }
+            out = LongestCS (vecSA, stringInput[0], k);
+            printf("%d\n", out);
         }
-        out = LongestCS (vecSA, stringInput[0], k);
-        printf("%d\n", out);
-        //printf("\n" );
     }
     return 0;
 }
