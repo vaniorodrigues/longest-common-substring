@@ -1,50 +1,50 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
 
 struct SuffixAutomaton {
-  vector<map<char,int> > edges; // edges[i]  : the labeled edges from node i
-  vector<int> link;            // link[i]   : the parent of i
-  vector<int> length;          // length[i] : the length of the longest string in the ith class
+  vector<map<char,int> > edges; // Lista de transições de saída
+  vector<int> link;            // Lista de transições de entrada
+  vector<int> length;          // Comprimento da maior substring endpos-equivalente
   int last;                    // the index of the equivalence class of the whole string
 
   SuffixAutomaton(string s) {
-    // add the initial node
-    edges.push_back(map<char,int>());
-    link.push_back(-1);
-    length.push_back(0);
-    last = 0;
+    // Adiciona o estado inicial
+    edges.push_back(map<char,int>()); 
+    link.push_back(-1);      // Link de entrada é um estado imaginário         
+    length.push_back(0);     // Como é o estado inicial, não apresenta comprimento         
+    last = 0;                 // Último estado antes da adição de uma novo caractere.                   
 
     for(int i=0;i<s.size();i++) {
-      // construct r
+      // Cria um novo estado para cada letra
       edges.push_back(map<char,int>());
-      length.push_back(i+1);
-      link.push_back(0);
+      length.push_back(i+1); // Comprimento(estadoAtual) vai comprimento(estadoAnterior) +1
+      link.push_back(0);    // Nao se sabe ainda qual é o link
       int r = edges.size() - 1;
 
-      // add edges to r and find p with link to q
-      int p = last;
+      // O laço while procura a existência de transições que utilizam o caractere sendo adicionado.
+      int p = last; // Estado do caracter adicionado
       while(p >= 0 && edges[p].find(s[i]) == edges[p].end()) {
         edges[p][s[i]] = r;
-        p = link[p];
+        p = link[p]; 
       }
       if(p != -1) {
-        int q = edges[p][s[i]];
-        if(length[p] + 1 == length[q]) {
-          // we do not have to split q, just set the correct suffix link
+        int q = edges[p][s[i]]; // q é o maior substring dentre as endpos-equivalente do estado.
+        if(length[p] + 1 == length[q]) { // Se essa comparação for verdadeira estamos na maior string das
+        //endpos-equivalentes, basta copiar as transições e ir para o próximo caracter.
           link[r] = q;
-        } else {
-          // we have to split, add q'
+        } else { // Indica que os estados p e q não apresentam o mesmo caminho. 
+        // É necessário criar um novo estado qq e copiar todas as informações de q para qq, menos o comprimento.
+        // Já que o comprimento de qq vai ser o comprimento(p)+1
           edges.push_back(edges[q]); // copy edges of q
           length.push_back(length[p] + 1);
           link.push_back(link[q]); // copy parent of q
           int qq = edges.size()-1;
-          // add qq as the new parent of q and r
           link[q] = qq;
           link[r] = qq;
-          // move short classes pointing to q to point to q'
-          while(p >= 0 && edges[p][s[i]] == q) {
+          
+          while(p >= 0 && edges[p][s[i]] == q) { // Verifica se a transições do caractere adicinado que leve
+          // do estado p para q, e as direcionada para o estado qq.
             edges[p][s[i]] = qq;
             p = link[p];
           }
@@ -95,12 +95,12 @@ int LongestCS(vector<SuffixAutomaton> vecSA, string in0, int k){ // A primeira s
                 break; // Nao testa mas nenhuma AS
             }
         }
-        if (!notSubtring && lcs < sub_in0.size()) {
+        if (!notSubtring && lcs < sub_in0.size()) { // Se a substring testado é uma substring de todas as outras substrings então atualiza o valor de lcs e aumenta o valor do lenght de teste. 
             lenghtTest = sub_in0.size() +1;
             if (z !=0){
             	z = z-1;
             }
-            lcs = sub_in0.size();
+            lcs = sub_in0.size(); // Novo valor da Longest Common Substring
         }
         if (lenghtTest+z >= in0.size()) {  // Nao vai ser possivel achar nenhuma substring maior do já encontrado.
             return lcs;
@@ -121,9 +121,9 @@ int main ()
     scanf("%d", &t);
     for (int i = 0; i < t; i++) {
         scanf("%d", &k);
-        stringInput.clear();
+        stringInput.clear(); // Limpa os valores to teste case anterior
         vecSA.clear();
-        if (k == 1) {
+        if (k == 1) { // Caso só tenha uma string imprimi o tamanho da própria
             scanf("%10000s", a);
             string b = a;
             out = b.size();
@@ -132,9 +132,9 @@ int main ()
             for (int j = 0; j < k; j++) {
                 scanf("%s", a);
                 stringInput.push_back(a);
-                vecSA.push_back(SuffixAutomaton (stringInput[j]));
+                vecSA.push_back(SuffixAutomaton (stringInput[j])); // Vetor que indexa os AS.
             }
-            out = LongestCS (vecSA, stringInput[0], k);
+            out = LongestCS (vecSA, stringInput[0], k); // Função retorna o lcs.
             printf("%d\n", out);
         }
     }
